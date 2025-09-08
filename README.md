@@ -156,6 +156,9 @@ These values are automatically logged to the W&B dashboard under the Config tab,
 - Evaluation metrics (e.g., EM, F1) are tracked over time.
 - GPU usage and system stats are monitored during training.
 
+#### Sample of eval/token accuracy and loss
+<img src="images/val_acc_loss.png" alt="sample wandb charts" width="600"/>
+
 
 ## ⚗️ Initial results/inference example
 During early evaluation, I tested the following prompt:
