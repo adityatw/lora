@@ -2,12 +2,13 @@
 ### Author: Aditya Wresniyandaka, Fall 2025
 
 ## 📌 Objective
-This experiment fine tunes the google/flan-t5-small or base model [FLAN-T5](https://huggingface.co/docs/transformers/main/en/model_doc/flan-t5) using 5,000 examples from the SQuAD v1.1 dataset, reformulated as a sequence-to-sequence task. The goal is to adapt the model for question answering using lightweight LoRA adapters, enabling efficient training on consumer-grade hardware (in this experiement I used an old NVIDiA GeForce GTX 1650 on ThinkPad X1 Extreme Gen 3).
+This experiment fine tunes the google/flan-t5-small or base model <a href="https://huggingface.co/docs/transformers/main/en/model_doc/flan-t5" target="_blank">FLAN-T5</a> using 5,000 examples from the SQuAD v1.1 dataset, reformulated as a sequence-to-sequence task. The goal is to adapt the model for question answering using lightweight LoRA adapters, enabling efficient training on consumer-grade hardware (in this experiement I used an old NVIDiA GeForce GTX 1650 on ThinkPad X1 Extreme Gen 3).
 > *flan-t5-small was chosen specifically because it fits within the VRAM constraints of a GeForce GTX 1650, making it a practical choice for experimentation without access to high-end compute.*
 
 
 LoRA (Low-Rank Adaptation) is a parameter-efficient fine-tuning technique that injects small, trainable matrices into a frozen pre-trained model. Instead of updating the entire model, LoRA adapts only a fraction of the weights, dramatically reducing memory and compute requirements. This makes it ideal for training large language models on modest hardware, without sacrificing task-specific performance.  
-For more details, see the [LoRA paper](https://arxiv.org/abs/2106.09685) or the [PEFT documentation on Hugging Face](https://huggingface.co/docs/peft/index).
+For more details, see the <a href="https://arxiv.org/abs/2106.09685" target="_blank">LoRA paper</a>
+ or the <a href="https://huggingface.co/docs/peft/index" target="_blank">PEFT documentation on Hugging Face</a>
 
 ## 🧠 Model setup
 - Base Model: google/flan-t5-small or google/flan-t5-based (if you have a larger memory on your GPU).
