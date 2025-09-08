@@ -158,9 +158,11 @@ These values are automatically logged to the W&B dashboard under the Config tab,
 - Model checkpoints are saved locally and can be optionally logged to W&B.
 - Evaluation metrics (e.g., EM, F1) are tracked over time.
 - GPU usage and system stats are monitored during training.
+#### Example of logged parameters
+<img src="images/example_logged_parameters.png" alt="sample wandb charts" width="800"/>
 
-#### Sample of eval/token accuracy and loss
-<img src="images/val_acc_loss.png" alt="sample wandb charts" width="600"/>
+#### Example eval/token accuracy and loss
+<img src="images/val_acc_loss.png" alt="sample wandb charts" width="800"/>
 
 
 ## ⚗️ Initial results/inference example
