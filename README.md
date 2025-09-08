@@ -235,11 +235,13 @@ LoRA offers a lightweight, modular alternative to traditional fine-tuning—maki
 
 This experiment demonstrates how LoRA can be effectively applied to question answering tasks using `flan-t5-small`, even on limited hardware like a GeForce GTX 1650. Through careful parameter tuning, memory-aware evaluation, and explicit metric tracking via Weights & Biases, we see that meaningful fine-tuning is possible without full-model retraining. The workflow is designed to be reproducible, modular, and adaptable—serving as a scaffold for future schema-aware, agentic AI pipelines.
 
+> **Note**: production-grade deployments, especially those involving larger models, multi-turn reasoning, or latency-sensitive applications, would still require more robust GPU infrastructure.
+
 ## 📝 Sample code disclaimer
 
 The sample code provided in this repository is intended for educational and experimental use. It is offered *as-is*, and may require adjustment based on your specific hardware (e.g., GPU memory) and software configuration (e.g., Python version, library compatibility).
 
-Users are encouraged to:
+You are encouraged to:
 - Tune parameters such as `batch_size`, `max_seq_length`, and `eval_steps` to fit their environment.
 - Monitor memory usage during training and evaluation.
 - Refer to official documentation for compatibility and performance tips.
