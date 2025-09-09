@@ -253,7 +253,7 @@ While both LoRA and transfer learning aim to adapt pre-trained models to new tas
 |----------------------------|------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
 | **What it does**           | Fine-tunes a pre-trained model by updating many or all weights                    | Injects small trainable matrices into specific layers while freezing the base model |
 | **Parameter updates**      | Often updates millions of parameters                                              | Updates only a few thousand parameters                                      |
-| **Memory/Compute cost**    | High (especially for large models)                                                | Low—designed for resource-constrained setups                                |
+| **Memory/Compute cost**    | High (especially for large models)                                                | Lower than full fine-tuning, but still task- and architecture-dependent                                |
 | **Modularity**             | Fine-tuned model is monolithic                                                    | LoRA modules are plug-and-play adapters                                     |
 | **Reusability**            | Hard to reuse across models                                                       | LoRA modules can be reused or swapped across tasks/models (with caveats)    |
 | **Deployment**             | Requires hosting the full fine-tuned model                                        | Base model + lightweight LoRA adapter (much smaller footprint) 

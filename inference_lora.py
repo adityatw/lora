@@ -1,7 +1,14 @@
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from peft import PeftModel
 
-model = AutoModelForSeq2SeqLM.from_pretrained("./flan-t5-qa-lora")
+# Load tokenizer from your saved path
 tokenizer = AutoTokenizer.from_pretrained("./flan-t5-qa-lora")
+
+# Load base model separately
+base_model = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-small")
+
+# Attach LoRA adapter
+model = PeftModel.from_pretrained(base_model, "./flan-t5-qa-lora")
 
 def query_model(prompt):
     inputs = tokenizer(prompt, return_tensors="pt")
