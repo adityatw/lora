@@ -256,7 +256,7 @@ While both LoRA and transfer learning aim to adapt pre-trained models to new tas
 | **Memory/Compute cost**    | High (especially for large models)                                                | Low—designed for resource-constrained setups                                |
 | **Modularity**             | Fine-tuned model is monolithic                                                    | LoRA modules are plug-and-play adapters                                     |
 | **Reusability**            | Hard to reuse across models                                                       | LoRA modules can be reused or swapped across tasks/models (with caveats)    |
-| **Deployment**             | Requires hosting the full fine-tuned model 
+| **Deployment**             | Requires hosting the full fine-tuned model                                        | Base model + lightweight LoRA adapter (much smaller footprint) 
 
 ### Conceptual difference
 - Transfer learning is like taking a pre-trained chef and retraining them to cook a new cuisine by adjusting their entire skillset.
