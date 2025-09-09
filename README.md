@@ -208,8 +208,9 @@ Response:
 | What is the largest planet in the solar system? | Earth        | ❌        | Model biased toward frequent entity (“Earth”); did not see enough planetary info  |
 | In which continent is Egypt located?            | Asia         | ❌        | Wrong continent, but answer type correct (continent); highlights partial learning |
 | What is the capital of Italy?                   | Italy        | ❌        | Echoed input instead of “Rome”; SQuAD-style training did not reinforce this fact  |
-| What is the capital of Japan?                   | Tokyo        | ✅        | Correct; shows some factual recall retained                                       |
+| What is the capital of Japan?                   | Tokyo        | ✅        | Correct; model recalls geography fact acurately                                       |
 | How many days are there in a leap year?         | 7            | ❌        | Arithmetic not supported by SQuAD-style data                                      |
+| What is the first day of the week?                   | Monday        | ✅        | Correct factual recall; simple factual recall retained from pretraining knowledge   
 
 #### Observations
 
