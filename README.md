@@ -189,6 +189,33 @@ Response:
 - Use the **full dataset** for training and validation instead of a small sample to improve generalization and coverage of factual knowledge.
 - Add evaluation metrics beyond token accuracy (e.g., **Exact Match, ROUGE, or semantic similarity metrics**) to better reflect model performance on generative tasks.
 
+### Additional findings with 50,000 samples
+
+When scaling up training to 50,000 rows, the model’s response to the original question improved:
+```
+**Prompt:** 
+Instruction: 'What is the capital of France?'
+
+Response: 
+**Generated Response:**
+'Paris'
+```
+
+| Issue / Question                                | Model Answer | Correct? | Notes / Resolution                                                                |
+| ----------------------------------------------- | ------------ | -------- | --------------------------------------------------------------------------------- |
+| What is the capital of France?                  | Paris        | ✅        | Correct after increasing training data from 5k → 50k samples                      |
+| Who painted the Mona Lisa?                      | the symphony | ❌        | Drift outside SQuAD domain; hallucination due to lack of relevant training data   |
+| What is the largest planet in the solar system? | Earth        | ❌        | Model biased toward frequent entity (“Earth”); did not see enough planetary info  |
+| In which continent is Egypt located?            | Asia         | ❌        | Wrong continent, but answer type correct (continent); highlights partial learning |
+| What is the capital of Italy?                   | Italy        | ❌        | Echoed input instead of “Rome”; SQuAD-style training did not reinforce this fact  |
+| What is the capital of Japan?                   | Tokyo        | ✅        | Correct; shows some factual recall retained                                       |
+| How many days are there in a leap year?         | 7            | ❌        | Arithmetic not supported by SQuAD-style data                                      |
+
+#### Observations
+
+- Increasing training data helped with some factual recall (e.g., “Paris”, “Tokyo”) but the model still hallucinates or echoes input when unsure.
+- Errors often arise outside the narrow scope of SQuAD-style factual QA.
+- Arithmetic and reasoning remain weak since they are not present in the dataset.
 
 ## 🎯 Ultimate goal & use case
 This project serves as a foundational step toward building efficient, schema-aware agentic AI systems that can reason over structured and unstructured data with minimal compute overhead. By fine-tuning flan-t5-base using LoRA on a curated subset of SQuAD, we demonstrate how large language models can be adapted for domain-specific question answering without retraining the full model.
@@ -242,6 +269,8 @@ LoRA is a game-changer for anyone looking to fine-tune large language models eff
 LoRA offers a lightweight, modular alternative to traditional fine-tuning—making it especially valuable for resource-constrained environments and rapid experimentation. By decoupling task-specific adaptation from full model retraining, it enables scalable, reproducible workflows without compromising performance.
 
 This experiment demonstrates how LoRA can be effectively applied to question answering tasks using `flan-t5-small`, even on limited hardware like a GeForce GTX 1650. Through careful parameter tuning, memory-aware evaluation, and explicit metric tracking via Weights & Biases, we see that meaningful fine-tuning is possible without full-model retraining. The workflow is designed to be reproducible, modular, and adaptable—serving as a scaffold for future schema-aware, agentic AI pipelines.
+
+> **Caveat**: While the concept of LoRA seems straightforward, effective deployment requires thoughtful decisions around model selection, target use cases, and available compute resources. Even with small adapters, factors like backbone size, batch size, sequence length, and domain coverage can dramatically influence both performance and generalization.
 
 > **Note**: production-grade deployments, especially those involving larger models, multi-turn reasoning, or latency-sensitive applications, would still require more robust GPU infrastructure.
 
