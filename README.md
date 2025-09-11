@@ -291,6 +291,23 @@ While both LoRA and transfer learning aim to adapt pre-trained models to new tas
 - Transfer learning is like taking a pre-trained chef and retraining them to cook a new cuisine by adjusting their entire skillset.
 - LoRA is like giving that chef a small recipe card for the new cuisine, keeping their core skills intact, but adapting their output with minimal overhead.
 
+## 🔍 LoRA vs RAG: key differences
+While both LoRA and RAG aim to improve the relevance or correctness of LLM outputs, they differ in **where the adaptation happens, flexibility, and knowledge freshness**.
+
+| Feature                 | LoRA (Low-Rank Adaptation)                                         | RAG (Retrieval-Augmented Generation)                                  |
+| ----------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| **What it does**        | Fine-tunes the model internally by adding small trainable matrices | Injects external knowledge into the model’s context at inference time |
+| **Where it acts**       | Inside the model weights (layers)                                  | Outside the model, at prompt/context level                            |
+| **Parameter updates**   | Only updates a few thousand parameters                             | No model weights updated                                              |
+| **Memory/Compute cost** | Lower than full fine-tuning, but still requires backprop           | Minimal, mostly retrieval and concatenation cost                      |
+| **Knowledge freshness** | Static: baked into the model after training                       | Dynamic: can use up-to-date or changing knowledge                    |
+| **Modularity**          | Plug-and-play adapters for specific tasks                          | Can swap or update retrieval sources without touching the model       |
+| **Deployment**          | Base model + LoRA adapter                                          | Base model + retrieval pipeline + context                             |
+
+### Conceptual difference
+- LoRA is like teaching a chef a new cooking technique, subtly updating their skills while keeping their core abilities intact.
+- RAG is like giving the chef a live cookbook at service, so they can reference the latest recipes without retraining their skills.
+
 ### Why LoRA matters for you
 LoRA is a game-changer for anyone looking to fine-tune large language models efficiently. It enables task-specific adaptation with minimal computational overhead, making it accessible even on modest hardware and ideal for rapid experimentation.
 
