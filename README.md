@@ -250,7 +250,7 @@ After fine-tuning **flan-t5-base** (~250M parameters) on the A100 GPU, the model
 ## 🎯 Ultimate goal & use case
 This project serves as a foundational step toward building efficient, schema-aware agentic AI systems that can reason over structured and unstructured data with minimal compute overhead. By fine-tuning flan-t5-base using LoRA on a curated subset of SQuAD, we demonstrate how large language models can be adapted for domain-specific question answering without retraining the full model.
 ### Why this matters
-- Efficiency: LoRA enables low-rank adaptation with minimal GPU memory.
+- Efficiency: LoRA updates only a small subset of parameters, requiring much less GPU memory than traditional fine-tuning of the full model.
 - Modularity: adapter-based fine-tuning supports multi-domain agentic workflows.
 - Interpretability: SQuAD’s format provides clear evaluation signals.
 - Scalability: workflow can be extended to biomedical, enterprise, or educational QA.
