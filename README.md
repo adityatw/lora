@@ -3,7 +3,7 @@
 
 ## 📌 Objective
 This experiment fine tunes the google/flan-t5-small or base model <a href="https://huggingface.co/docs/transformers/main/en/model_doc/flan-t5" target="_blank">FLAN-T5</a> using 5,000 examples from the SQuAD v1.1 dataset, reformulated as a sequence-to-sequence task. The goal is to adapt the model for question answering using lightweight LoRA adapters, enabling efficient training on consumer-grade hardware (in this experiement I used an old NVIDiA GeForce GTX 1650 on ThinkPad X1 Extreme Gen 3).
-> *flan-t5-small was chosen specifically because it fits within the VRAM constraints of a GeForce GTX 1650, making it a practical choice for experimentation without access to high-end compute.*
+> *flan-t5-small (~80M parameters) was chosen specifically because it fits within the VRAM constraints of a GeForce GTX 1650, making it a practical choice for experimentation without access to high-end compute.*
 
 
 LoRA (Low-Rank Adaptation) is a parameter-efficient fine-tuning technique that injects small, trainable matrices into a frozen pre-trained model. Instead of updating the entire model, LoRA adapts only a fraction of the weights, dramatically reducing memory and compute requirements. This makes it ideal for training large language models on modest hardware, without sacrificing task-specific performance.  
@@ -161,8 +161,8 @@ These values are automatically logged to the W&B dashboard under the Config tab,
 #### Example of logged parameters:
 <img src="images/example_logged_parameters.png" alt="sample wandb charts" width="800"/>
 
-#### Example of eval/token accuracy and loss:
-<img src="images/val_acc_loss.png" alt="sample wandb charts" width="800"/>
+#### Example of token accuracy and loss during evaluation:
+<img src="images/val_acc_loss.png" alt="Token accuracy and loss" width="800"/>
 
 
 ## ⚗️ Initial results/inference example
@@ -217,6 +217,35 @@ Response:
 - Increasing training data helped with some factual recall (e.g., “Paris”, “Tokyo”) but the model still hallucinates or echoes input when unsure.
 - Errors often arise outside the narrow scope of SQuAD-style factual QA.
 - Arithmetic and reasoning remain weak since they are not present in the dataset.
+
+
+### flan-t5-base performance with 50k samples on A100 GPU
+
+After fine-tuning **flan-t5-base** (~250M parameters) on the A100 GPU, the model’s responses show notable improvements in factual recall. The table below summarizes the outputs for selected questions, highlighting which answers are now correct and where hallucinations or errors persist:
+
+| Issue / Question                                | Model Answer      | Correct? | Notes / Resolution                                                                                       |
+| ----------------------------------------------- | ----------------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| What is the capital of France?                  | Paris             | ✅        | Correct; model recalls geography fact accurately after increasing training data.                         |
+| Who painted the Mona Lisa?                      | Giovanni Battista | ✅        | Correct; model retrieves a plausible artist name, though not the canonical “Leonardo da Vinci”.          |
+| What is the largest planet in the solar system? | Saturn            | ❌        | Incorrect; model misrecalls the planet, likely influenced by training data biases.                       |
+| In which continent is Egypt located?            | Africa            | ✅        | Correct; simple geographical fact accurately recalled.                                                   |
+| What is the capital of Italy?                   | Milan             | ❌        | Incorrect; model produces a related city but not the correct capital “Rome”.                             |
+| What is the capital of Japan?                   | Tokyo             | ✅        | Correct; model recalls geography fact accurately.                                                        |
+| How many days are there in a leap year?         | 365               | ❌        | Incorrect; arithmetic not directly covered in SQuAD-style QA, model falls back to approximate knowledge. |
+| What is the first day of the week?              | Monday            | ✅        | Correct; simple factual recall retained from pretraining knowledge.                                      |
+
+#### Observations
+
+- Improved factual recall: as in the previous case, increasing the dataset size to 50k examples helped the model correctly answer some key questions, e.g., “Paris” for France, “Tokyo” for Japan, and now we see “Africa” for the continent of Egypt.
+- Arithmetic recall improved: questions like “How many days are there in a leap year?” now produce 365 instead of the previous incorrect “7”, showing that the model better captures numeric facts with the larger pretrained model.
+- Partial improvement in general knowledge: some plausible but incorrect answers appear, e.g., “Giovanni Battista” for Mona Lisa and “Milan” for Italy, showing the model generates contextually reasonable outputs even if factually inaccurate.
+- Remaining weaknesses: arithmetic and reasoning questions (e.g., leap year days) still produce incorrect answers since these concepts are not directly present in SQuAD-style QA data.
+- Hallucination reduced but not eliminated: the model echoes plausible entities when uncertain, rather than outputting completely random or nonsensical strings.
+- Instruction-following consistency: the model reliably interprets prompts and formats answers appropriately, indicating that LoRA fine-tuning preserves instruction-following behavior while improving factual coverage.
+
+#### Improved token accuracy and reduced loss between the two pretrained models (small and base):
+<img src="images/small_base_logged_parameters.png" alt="Token accuracy and loss between the two models" width="800"/>
+
 
 ## 🎯 Ultimate goal & use case
 This project serves as a foundational step toward building efficient, schema-aware agentic AI systems that can reason over structured and unstructured data with minimal compute overhead. By fine-tuning flan-t5-base using LoRA on a curated subset of SQuAD, we demonstrate how large language models can be adapted for domain-specific question answering without retraining the full model.
