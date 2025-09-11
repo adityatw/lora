@@ -243,7 +243,7 @@ After fine-tuning **flan-t5-base** (~250M parameters) on the A100 GPU, the model
 - Hallucination reduced but not eliminated: the model echoes plausible entities when uncertain, rather than outputting completely random or nonsensical strings.
 - Instruction-following consistency: the model reliably interprets prompts and formats answers appropriately, indicating that LoRA fine-tuning preserves instruction-following behavior while improving factual coverage.
 
-#### Improved token accuracy and reduced loss between the two pretrained models (small and base):
+#### Improved token accuracy and reduced loss between the two pretrained models (base and small):
 <img src="images/small_base_logged_parameters.png" alt="Token accuracy and loss between the two models" width="800"/>
 
 
