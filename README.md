@@ -11,7 +11,7 @@ For more details, see the <a href="https://arxiv.org/abs/2106.09685" target="_bl
  or the <a href="https://huggingface.co/docs/peft/index" target="_blank">PEFT documentation on Hugging Face</a>
 
 ## 🧠 Model setup
-- Base Model: google/flan-t5-small or google/flan-t5-based (if you have a larger memory on your GPU).
+- Base Model: google/flan-t5-small or google/flan-t5-base (if you have a larger memory on your GPU).
 - Adapter method: LoRA (Low-Rank Adaptation) via Parameter Efficient Fine Tuning (peft).
 - Quantization: initially attempted 8-bit via bitsandbytes but later disabled due to SCB attribute error.
 - Precision: full precision (torch.float16) used for compatibility.
