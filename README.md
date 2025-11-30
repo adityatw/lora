@@ -283,6 +283,7 @@ any “wrong answer” cases or mispredictions were nearly identical across both
 <li>Ensuring consistent FP settings (fp16 vs fp32) and Slurm configs is important; slight differences can cause tiny accuracy fluctuations.
 <li>Tokenization order and dataset splitting also mattered; i.e., “tokenize-then-split” versus “split-then-tokenize” difference.
 </ul>
+<li>GPU temperature stayed stable around 56–57°C during training, with about five brief spikes up to ~62°C, likely due to momentary workload surges, heavier batches, or internal CUDA housekeeping. <i>(On the A100, temps held around 29–30°C.)</i>
 </ol>
 
 ## 🎯 Ultimate goal & use case
