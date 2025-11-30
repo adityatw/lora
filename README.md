@@ -2,8 +2,8 @@
 ### Author: Aditya Wresniyandaka, Fall 2025
 
 ## 📌 Objective
-This experiment fine tunes the google/flan-t5-small or base model <a href="https://huggingface.co/docs/transformers/main/en/model_doc/flan-t5" target="_blank">FLAN-T5</a> using 5,000 examples from the SQuAD v1.1 dataset, reformulated as a sequence-to-sequence task. The goal is to adapt the model for question answering using lightweight LoRA adapters, enabling efficient training on consumer-grade hardware (in this experiement I used an old NVIDiA GeForce GTX 1650 on ThinkPad X1 Extreme Gen 3).
-> *flan-t5-small (~80M parameters) was chosen specifically because it fits within the VRAM constraints of a GeForce GTX 1650, making it a practical choice for experimentation without access to high-end compute.*
+This experiment fine tunes the google/flan-t5-small or base model <a href="https://huggingface.co/docs/transformers/main/en/model_doc/flan-t5" target="_blank">FLAN-T5</a> using 5,000 examples from the SQuAD v1.1 dataset, reformulated as a sequence-to-sequence task. The goal is to adapt the model for question answering using lightweight LoRA adapters, enabling efficient training across a range of hardware, from consumer-grade GPUs to data-center accelerators. In early experiments, I used an old NVIDIA GeForce GTX 1650 on a ThinkPad X1 Extreme Gen 3. *(November 2025 update)* Later runs were performed on an NVIDIA RTX 5000 Ada on a ThinkPad P16 Gen 2 and an A100 HPC, demonstrating that the approach scales to higher-end GPUs with larger VRAM while producing nearly identical convergence and token accuracy.
+> *flan-t5-small (~80M parameters) was chosen specifically because it fits within the VRAM constraints of the GTX 1650, making it a practical choice for experimentation without access to high-end compute, while still benefiting from LoRA adaptation on more powerful hardware like the RTX 5000 Ada or A100.*
 
 
 LoRA (Low-Rank Adaptation) is a parameter-efficient fine-tuning technique that injects small, trainable matrices into a frozen pre-trained model. Instead of updating the entire model, LoRA adapts only a fraction of the weights, dramatically reducing memory and compute requirements. This makes it ideal for training large language models on modest hardware, without sacrificing task-specific performance.  
@@ -219,7 +219,7 @@ Response:
 - Arithmetic and reasoning remain weak since they are not present in the dataset.
 
 
-### flan-t5-base performance with 50k samples on A100 GPU
+### flan-t5-base performance with 50000 samples on A100 GPU
 
 After fine-tuning **flan-t5-base** (~250M parameters) on the A100 GPU, the model’s responses show notable improvements in factual recall. The table below summarizes the outputs for selected questions, highlighting which answers are now correct and where hallucinations or errors persist:
 
@@ -246,6 +246,44 @@ After fine-tuning **flan-t5-base** (~250M parameters) on the A100 GPU, the model
 #### Improved token accuracy and reduced loss between the two pretrained models (base and small):
 <img src="images/small_base_logged_parameters.png" alt="Token accuracy and loss between the two models" width="800"/>
 
+### November 2025 update: flan-t5-base performance with 50000 samples on RTX 5000 Ada
+This section summarizes the results of training flan-t5-base on 50,000 samples using an NVIDIA RTX 5000 Ada GPU. The experiments explore model performance, convergence behavior, and memory efficiency with LoRA adapters under a larger dataset, highlighting differences compared to previous runs on smaller models and consumer-grade hardware.
+Using the same questions as previous experiments, the model produced identical answers in all cases except one:
+
+| Issue / Question                                | Model Answer      | Correct? | Notes / Resolution                                                                                       |
+| ----------------------------------------------- | ----------------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| Who painted the Mona Lisa?                      | the Mona Lisa    | ❌        | Incorrect; this likely occurs because the model resorts to repeating parts of the question or hedging its answer when it wasn’t trained on a strong, direct association in that context.       
+
+<p>
+Model performance:
+<p>
+<img src="images/rtx5000_val_acc_loss.png" alt="Token accuracy and loss using base model on the RTX 5000 Ada" width="800"/>
+<p>
+Overall observations:
+<ol>
+<li>Convergence behavior:
+<ul>
+<li>Both GPUs produced almost identical convergence trajectories for the training runs.
+<li>Loss curves and token-level accuracy over time were very close, which is remarkable given the difference in hardware.
+<li>Minor differences in final token accuracy seemed to stem from floating-point precision differences or slight variations in initialization.
+<ul>
+<li>On the A100, we achieved a final token accuracy of ~0.9464 (with tokenize-then-split).
+<li>The RTX 5000 Ada achieved a similar accuracy of ~0.9438 (with split-then-tokenize).
+</ul>
+</ul>
+<li>Failure modes:
+any “wrong answer” cases or mispredictions were nearly identical across both GPUs, indicating that the model’s failure modes are more algorithmic than hardware-dependent.
+<li>Memory / resource considerations:
+<ul>
+<li>A100 handled slightly larger batches more comfortably due to 40 GB VRAM.
+<li>RTX5000 required careful memory management (OOM issues were encountered if eval dataset was tokenized without reduction).
+</ul>
+<li>Implementation checks:
+<ul>
+<li>Ensuring consistent FP settings (fp16 vs fp32) and Slurm configs is important; slight differences can cause tiny accuracy fluctuations.
+<li>Tokenization order and dataset splitting also mattered; i.e., “tokenize-then-split” versus “split-then-tokenize” difference.
+</ul>
+</ol>
 
 ## 🎯 Ultimate goal & use case
 This project serves as a foundational step toward building efficient, schema-aware agentic AI systems that can reason over structured and unstructured data with minimal compute overhead. By fine-tuning flan-t5-base using LoRA on a curated subset of SQuAD, we demonstrate how large language models can be adapted for domain-specific question answering without retraining the full model.
@@ -330,7 +368,7 @@ You are encouraged to:
 - Monitor memory usage during training and evaluation.
 - Refer to official documentation for compatibility and performance tips.
 
-This setup has been tested on a GeForce GTX 1650 with limited VRAM, and includes memory-aware strategies to prevent out-of-memory errors during training and evaluation.
+This setup has been tested on a GeForce GTX 1650 with limited VRAM, and on an NVIDIA RTX 5000 Ada using a split-then-tokenize strategy to efficiently manage memory and prevent out-of-memory errors during training and evaluation.
 
 ## 📖 Citation & acknowledgments
 
